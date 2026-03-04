@@ -1,4 +1,4 @@
-# 🧬 BashBuddy — Sentient Terminal Companion
+# 🧬 BashBuddy — Your Terminal Has Feelings Now
 
 <p align="center">
   <img src="https://img.shields.io/badge/version-2.0-blue" alt="Version 2.0">
@@ -7,252 +7,169 @@
   <img src="https://img.shields.io/badge/license-MIT-lightgrey" alt="MIT License">
 </p>
 
-**BashBuddy** is your personal terminal companion that **learns**, **evolves**, and **grows** alongside your workflow. It monitors your shell history and transforms into one of four sentient personas based on how you use your terminal — complete with evolving ASCII art, XP leveling, and streak bonuses.
+BashBuddy isn't just another dotfile script. It's a **sentient terminal companion** that watches how you work, figures out what kind of dev you are, and evolves over time. Yes, your terminal now has a pet. You're welcome.
 
-## ✨ Features
+The more you use your terminal, the more it grows — from a Level 1 Hatchling 🥚 all the way to a Level 50 Legendary being. It even gets fancier ASCII art as it levels up.
 
-### 🧬 Sentient Evolution Engine
-- **Automatic mode detection** — BashBuddy analyzes your recent commands and identifies your current working mode
-- **4 Unique Personas** with distinct ASCII art:
+## 🤔 What Does It Actually Do?
 
-  | Mode | Trigger | Icon |
-  |---|---|---|
-  | **The Architect** | `git`, `merge`, `branch`, `rebase`, `commit`... | 🏛️ |
-  | **The Explorer** | `ls`, `cd`, `cat`, `find`, `grep`, `tree`... | 🧭 |
-  | **The Builder** | `python`, `pip`, `docker`, `npm`, `pytest`... | 🔨 |
-  | **The Destroyer** | `sudo`, `rm`, `kill`, `chmod`, `pkill`... | 💀 |
+1. **Watches your shell history** — every 10 commands, a background Python script peeks at what you've been up to
+2. **Picks your vibe** — based on your commands, it decides you're one of four personas:
 
-- **XP & Leveling System** — Earn XP for every categorized command (+10 XP each)
-- **5 Evolution Stages**: 🥚 Hatchling → 📘 Apprentice → ⚔️ Adept → 👑 Master → 🌟 Legendary
-- **3 ASCII Art Tiers** per mode — your companion gets taller and more complex as you level up
-- **Streak Bonuses** — Stay in the same mode for 3+ cycles to earn 1.5× XP!
+   | Mode | You're Probably... | Trigger Commands |
+   |---|---|---|
+   | 🏛️ **The Architect** | Branching, merging, rebasing like a pro | `git`, `merge`, `branch`, `commit`... |
+   | 🧭 **The Explorer** | Poking around the filesystem | `ls`, `cd`, `cat`, `find`, `grep`... |
+   | 🔨 **The Builder** | Building stuff, running tests | `python`, `docker`, `npm`, `pytest`... |
+   | 💀 **The Destroyer** | Living dangerously | `sudo`, `rm`, `kill`, `chmod`... |
 
-### 🛠️ Shell Utilities
-- **Navigation shortcuts** — `desk`, `down`, `docs`, `..`, `...`, etc.
-- **Config helpers** — `bashrc`, `zshrc`, `reload`, `reloadz`
-- **Git shortcuts** — `gs` (status), `gp` (push)
-- **System tools** — `ports`, `myIP`, `weather`, `killPort`
-- **Python environments** — `CreateVenv <version> <name>`
+3. **Levels you up** — earn XP for every command, get streak bonuses for staying in the same mode
+4. **Shows off** — animated ASCII companion on startup, live stats on every prompt line
+
+## ⚡ The Animations
+
+This isn't your grandma's `.bashrc`. BashBuddy comes with:
+
+- **Animated startup** — logo fades in line-by-line, scanning spinners ⠋⠙⠹⠸⠼⠴, companion panel reveals with delays
+- **Live RPROMPT** — right side of every prompt shows mode, level, pulsing XP bar, and spinning indicator that updates in real-time
+- **Evolve spinner** — fancy braille animation when you trigger an evolution
 
 ## 📦 Installation
 
-### Prerequisites
-- **macOS / Linux**
-- **Python 3.8+** (for the evolution engine)
-- **Zsh** or **Bash** shell
-
-### Quick Install
+You need:
+- **macOS or Linux**
+- **Python 3.8+** (for the brain)
+- **Zsh** or **Bash**
 
 ```bash
-# Clone the repository
 git clone https://github.com/Ramc26/BashBuddy.git
-
-# Navigate to the BashBuddy directory
 cd BashBuddy
-
-# Make the installer executable and run it
 chmod +x install.sh
 ./install.sh
 ```
 
-The installer will:
-1. ✅ Check for Python 3 and required files
-2. ✅ Copy `BashBuddy.sh` and `evolution_engine.py` to `/usr/local/bin/`
-3. ✅ Create the initial companion state at `~/.bash_buddy_state.json`
-4. ✅ Add a `source` line and evolution hook to your `~/.zshrc` (or `~/.bashrc`)
-5. ✅ Run the first evolution
+That's it. The installer handles everything:
+- ✅ Copies scripts to `/usr/local/bin/`
+- ✅ Creates your companion's state file
+- ✅ Hooks into your shell config
+- ✅ Runs the first evolution
 
-**Open a new terminal** to see your companion!
-
-## 🎮 Commands
-
-### Sentient Companion
-
-| Command | Description |
-|---|---|
-| `bb-evolve` | Manually trigger the evolution engine to re-analyze your history and update your companion |
-| `bb-status` | Display your current companion status (mode, level, XP, stage) |
-| `bb-reset` | Reset your companion back to Level 1 Hatchling |
-
-### Navigation
-
-| Command | Description |
-|---|---|
-| `desk` | Go to Desktop |
-| `down` | Go to Downloads |
-| `docs` | Go to Documents |
-| `pics` | Go to Pictures |
-| `music` | Go to Music |
-| `videos` | Go to Videos |
-| `root` | Go to `/` |
-| `home` | Go to `~` |
-| `..` / `...` / `....` | Go up 1 / 2 / 3 directories |
-
-### Configuration
-
-| Command | Description |
-|---|---|
-| `bashrc` | Edit `~/.bashrc` |
-| `zshrc` | Edit `~/.zshrc` |
-| `reload` | Reload `.bashrc` |
-| `reloadz` | Reload `.zshrc` |
-
-### System & Network
-
-| Command | Description |
-|---|---|
-| `ports` | Show all listening ports |
-| `myIP` | Display your public IP |
-| `weather [city]` | Show weather (defaults to current location) |
-| `killPort <port>` | Kill process on a specific port |
-| `showWifiPass` | Show saved Wi-Fi passwords |
-| `updateSystem` | Update & upgrade system packages |
-
-### Git
-
-| Command | Description |
-|---|---|
-| `gs` | `git status` |
-| `gp` | `git push` |
-
-### Utilities
-
-| Command | Description |
-|---|---|
-| `ll` | `ls -lh` — detailed file listing |
-| `la` | `ls -lha` — all files including hidden |
-| `cls` | Clear terminal |
-| `bye` | Exit terminal |
-| `CreateVenv <ver> <name>` | Create a Python virtual environment |
-
-### Full Help
-
-```bash
-BashBuddy -help
-```
-
-## 🧪 Testing
-
-### Test the Evolution Engine
-
-```bash
-# Navigate to BashBuddy directory
-cd BashBuddy
-
-# Run the engine directly (analyzes your real shell history)
-python3 evolution_engine.py
-
-# Check just the status without re-analyzing
-python3 evolution_engine.py --status-only
-
-# Analyze only the last 10 commands
-python3 evolution_engine.py --analyze 10
-
-# Run in quiet mode (how the background hook uses it)
-python3 evolution_engine.py --quiet
-```
-
-### Inspect the State File
-
-```bash
-cat ~/.bash_buddy_state.json
-```
-
-You should see something like:
-```json
-{
-  "mode": "The Explorer",
-  "mode_icon": "🧭",
-  "level": 2,
-  "xp": 190,
-  "evolution_stage": "Hatchling",
-  "mode_scores": {
-    "The Architect": 0,
-    "The Explorer": 21,
-    "The Builder": 19,
-    "The Destroyer": 0
-  }
-}
-```
-
-### Test the Shell Display
-
-```bash
-# Source BashBuddy directly to see the companion status panel
-source BashBuddy.sh
-
-# Or after installing, just run:
-bb-status
-
-# Trigger a fresh evolution and see updated stats:
-bb-evolve
-```
-
-### Test Different Modes
-
-Run some commands to shift your mode and then evolve:
-
-```bash
-# Become "The Architect" 🏛️
-git status && git log && git branch && git diff
-bb-evolve
-
-# Become "The Builder" 🔨
-python3 --version && pip3 list && docker ps
-bb-evolve
-
-# Become "The Destroyer" 💀
-# (careful with these!)
-sudo whoami && kill -0 $$
-bb-evolve
-```
-
-### Verify the Precmd Hook
-
-After installation, the hook auto-triggers every 10 commands. Run ~10 commands and then check:
-
-```bash
-bb-status  # Should show updated XP and command count
-```
+**Open a new terminal** and say hello to your new buddy.
 
 ## 🗑️ Uninstallation
 
+Changed your mind? No hard feelings (okay, maybe a little).
+
 ```bash
-# Remove scripts
-sudo rm /usr/local/bin/BashBuddy.sh
-sudo rm /usr/local/bin/bash_buddy_evolution.py
-
-# Remove state file
-rm ~/.bash_buddy_state.json
-
-# Edit your shell config to remove BashBuddy lines
-nano ~/.zshrc   # or ~/.bashrc
-# Remove: source /usr/local/bin/BashBuddy.sh
-# Remove: the __bb_precmd hook block
-
-# Reload
-source ~/.zshrc
+cd BashBuddy
+chmod +x uninstall.sh
+./uninstall.sh
 ```
 
-## 📁 Project Structure
+It'll show your companion's final stats as a farewell, clean everything up, and back up your shell config. Just in case you miss us.
+
+## 🎮 Commands
+
+### Your Companion
+
+| Command | What It Does |
+|---|---|
+| `bb-evolve` | Manually trigger evolution (with a cool spinner) |
+| `bb-status` | Check your companion's current stats |
+| `bb-reset` | Wipe everything and start over as a Hatchling |
+| `buddy --help` | Show all available commands |
+
+### Navigation Shortcuts
+
+| Command | Goes To |
+|---|---|
+| `desk` | ~/Desktop |
+| `down` | ~/Downloads |
+| `docs` | ~/Documents |
+| `pics` | ~/Pictures |
+| `music` | ~/Music |
+| `videos` | ~/Videos |
+| `home` / `root` | ~ / / |
+| `..` `...` `....` | Up 1, 2, or 3 directories |
+
+### Quick Tools
+
+| Command | Does |
+|---|---|
+| `ll` / `la` | Detailed / all file listing |
+| `gs` / `gp` | git status / git push |
+| `myIP` | Shows your public IP |
+| `weather [city]` | Weather report (try `weather tokyo`) |
+| `killPort 8080` | Kills whatever's hogging that port |
+| `ports` | Shows all listening ports |
+| `cls` / `bye` | Clear screen / exit terminal |
+| `CreateVenv 3.11 myenv` | Create a Python virtual environment |
+| `bashrc` / `zshrc` | Edit your shell config |
+| `reload` / `reloadz` | Reload your shell config |
+
+## 📊 How Leveling Works
+
+- **+10 XP** per recognized command (out of the last 50 analyzed)
+- **100 XP** = 1 level up
+- **Streak bonus** — stay in the same mode for 3+ cycles = **1.5× XP**
+- **Max level** — 50 (good luck getting there)
+
+### Evolution Stages
+
+| Level | Stage | How It Feels |
+|---|---|---|
+| 1–4 | 🥚 Hatchling | Fresh out of `source ~/.zshrc` |
+| 5–9 | 📘 Apprentice | Getting the hang of things |
+| 10–19 | ⚔️ Adept | You know your way around |
+| 20–34 | 👑 Master | Terminal wizard status |
+| 35–50 | 🌟 Legendary | You ARE the terminal |
+
+Each mode also has **3 tiers of ASCII art** — the companion gets bigger and more detailed as you level up. A Level 1 Architect is a tiny house. A Level 35 Architect is a full cathedral.
+
+## 🧪 Testing It Out
+
+```bash
+# Run the evolution engine directly
+python3 evolution_engine.py
+
+# Check the state file
+cat ~/.bash_buddy_state.json
+
+# See your stats
+bb-status
+
+# Force an evolution
+bb-evolve
+
+# Try shifting modes — do a bunch of git stuff:
+git status && git log --oneline -5 && git branch
+bb-evolve  # Should shift toward Architect 🏛️
+```
+
+## 📁 What's In The Box
 
 ```
 BashBuddy/
-├── BashBuddy.sh          # Main shell script (aliases, functions, companion display)
-├── evolution_engine.py    # Python evolution engine (history analysis, XP, leveling)
-├── install.sh             # Installer script
-├── README.md
-└── LICENSE
+├── BashBuddy.sh          # The main shell script (aliases, companion display, animations)
+├── evolution_engine.py    # The brain (history analysis, XP, leveling)
+├── install.sh             # One-command installer
+├── uninstall.sh           # Clean uninstaller (with a goodbye message)
+├── README.md              # You are here
+└── LICENSE                # MIT — do whatever you want with it
 ```
 
 ## 🤝 Contributing
 
-Contributions are welcome! Feel free to fork the project, create a new branch, and submit a pull request. Ideas for new modes, ASCII art, or features? Open an issue!
+Got ideas? Found a bug? Want to add a new mode? (The Hacker? The DevOps? The Coffee Drinker?)
+
+Fork it, branch it, PR it. All contributions welcome.
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+MIT — free to use, modify, and share. Go wild.
 
 ## 👤 Author
 
-- **Ram Bikkina** — [Email](mailto:rambikkina@yahoo.com)
+**Ram Bikkina** — [rambikkina@yahoo.com](mailto:rambikkina@yahoo.com)
+
+Built with ☕ and an unreasonable attachment to terminals.

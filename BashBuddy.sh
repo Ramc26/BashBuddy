@@ -9,36 +9,78 @@ yellow='\033[0;33m'
 red='\033[0;31m'
 magenta='\033[0;35m'
 white='\033[0;37m'
+gray='\033[0;90m'
 nc='\033[0m' # No Color
 
 # ═══════════════════════════════════════════════════════════════════════════════
 #  BashBuddy — Sentient Terminal Companion
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# ─── ASCII Logo ──────────────────────────────────────────────────────────────
-
-echo """
-
-░▒▓███████▓▒░ ░▒▓██████▓▒░ ░▒▓███████▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░ 
-░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
-░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
-░▒▓███████▓▒░░▒▓████████▓▒░░▒▓██████▓▒░░▒▓████████▓▒░      ░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░░▒▓██████▓▒░  
-░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░  ░▒▓█▓▒░     
-░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░  ░▒▓█▓▒░     
-░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓█▓▒░░▒▓█▓▒░      ░▒▓███████▓▒░ ░▒▓██████▓▒░░▒▓███████▓▒░░▒▓███████▓▒░   ░▒▓█▓▒░     
-                                                                                                                              
-"""
-
-# ─── Companion Status ────────────────────────────────────────────────────────
-
 __bb_state_file="$HOME/.bash_buddy_state.json"
 
-# Read a JSON key from the state file (lightweight, no jq needed)
+# ─── Animated Startup ────────────────────────────────────────────────────────
+
+__bb_animate_text() {
+    local text="$1"
+    local delay="${2:-0.015}"
+    local i
+    for ((i=0; i<${#text}; i++)); do
+        printf "%s" "${text:$i:1}"
+        sleep "$delay"
+    done
+    echo ""
+}
+
+__bb_scan_animation() {
+    local label="$1"
+    local frames=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
+    local i
+    for ((i=0; i<10; i++)); do
+        printf "\r  ${cyan}${frames[$i]}${nc} ${label}..."
+        sleep 0.06
+    done
+    printf "\r  ${green}✓${nc} ${label}   \n"
+}
+
+__bb_startup() {
+    echo ""
+    # Animated logo reveal
+    echo -e "${cyan}${bold}"
+    local logo_lines=(
+        "  ____            _       ____            _     _"
+        " | __ )  __ _ ___| |__   | __ ) _   _  __| | __| |_   _"
+        " |  _ \\ / _\` / __| '_ \\  |  _ \\| | | |/ _\` |/ _\` | | | |"
+        " | |_) | (_| \\__ \\ | | | | |_) | |_| | (_| | (_| | |_| |"
+        " |____/ \\__,_|___/_| |_| |____/ \\__,_|\\__,_|\\__,_|\\__, |"
+        "                                                   |___/"
+    )
+    for line in "${logo_lines[@]}"; do
+        echo "$line"
+        sleep 0.04
+    done
+    echo -e "${nc}"
+
+    # Scanning animation
+    __bb_scan_animation "Initializing sentient layer"
+    __bb_scan_animation "Reading evolution state"
+
+    # Show animated companion status
+    __bb_show_companion_animated
+
+    # Welcome
+    echo ""
+    __bb_animate_text "  ✨ Your sentient terminal companion is awake." 0.02
+    echo -e "  ${dim}Type ${normal}${bold}buddy --help${normal}${dim} for commands  •  ${normal}${bold}bb-evolve${normal}${dim} to level up${normal}"
+    echo ""
+}
+
+# ─── JSON Reader ─────────────────────────────────────────────────────────────
+
 __bb_read_json() {
     local key="$1"
     if [ -f "$__bb_state_file" ]; then
         python3 -c "
-import json, sys
+import json
 try:
     with open('$__bb_state_file') as f:
         d = json.load(f)
@@ -49,13 +91,13 @@ except:
     fi
 }
 
-# Get ASCII companion based on mode and level tier
+# ─── Clean Companion Characters ─────────────────────────────────────────────
+
 __bb_get_companion() {
     local mode="$1"
     local level="$2"
     local tier=1
 
-    # Determine tier: 1 (levels 1-9), 2 (levels 10-24), 3 (levels 25+)
     if [ "$level" -ge 25 ] 2>/dev/null; then
         tier=3
     elif [ "$level" -ge 10 ] 2>/dev/null; then
@@ -64,137 +106,167 @@ __bb_get_companion() {
 
     case "$mode" in
         "The Architect")
+            # Blueprint/building — represents structuring code
             if [ $tier -eq 1 ]; then
                 echo -e "${cyan}"
-                echo "       ╔═╗       "
-                echo "       ║█║       "
-                echo "      ╔╩═╩╗      "
-                echo "      ╚═══╝      "
+                echo "          ⌂          "
+                echo "         /█\\         "
+                echo "        / █ \\        "
+                echo "       /█████\\       "
                 echo -e "${nc}"
             elif [ $tier -eq 2 ]; then
                 echo -e "${cyan}"
-                echo "      ╔═══╗      "
-                echo "     ╔╣ █ ╠╗     "
-                echo "     ║╚═══╝║     "
-                echo "    ╔╩═════╩╗    "
-                echo "    ║ ║   ║ ║    "
-                echo "    ╚═╩═══╩═╝    "
+                echo "          △          "
+                echo "         /█\\         "
+                echo "        /▓▓▓\\        "
+                echo "       /█████\\       "
+                echo "      │ ◫   ◫ │      "
+                echo "      └───⌂───┘      "
                 echo -e "${nc}"
             else
                 echo -e "${cyan}"
-                echo "        ▲        "
-                echo "       ╱█╲       "
-                echo "      ╔╩═╩╗      "
-                echo "     ╔╣ ◆ ╠╗     "
-                echo "    ╔╩╩═══╩╩╗    "
-                echo "    ║ ║ ◆ ║ ║    "
-                echo "   ╔╩═╩═══╩═╩╗   "
-                echo "   ║ ║ ║ ║ ║ ║   "
-                echo "   ╚═╩═╩═╩═╩═╝   "
+                echo "        ✦   ✦        "
+                echo "         ╲△╱         "
+                echo "         /█\\         "
+                echo "        /▓▓▓\\        "
+                echo "       /█████\\       "
+                echo "      ╔═══════╗      "
+                echo "      ║ ◫ ⌂ ◫ ║      "
+                echo "      ║ ◫   ◫ ║      "
+                echo "      ╚══╦═╦══╝      "
                 echo -e "${nc}"
             fi
             ;;
         "The Explorer")
+            # Compass/adventurer — represents navigating the filesystem
             if [ $tier -eq 1 ]; then
                 echo -e "${green}"
-                echo "       ◯        "
-                echo "      /|\\       "
-                echo "      / \\       "
-                echo "     🧭         "
+                echo "        ╭─╮         "
+                echo "        │◉│         "
+                echo "       ╭┴─┴╮        "
+                echo "       ╰┬─┬╯ ⌐     "
                 echo -e "${nc}"
             elif [ $tier -eq 2 ]; then
                 echo -e "${green}"
-                echo "     ░░◯░░      "
-                echo "    ░/███\\░     "
-                echo "     / ║ \\      "
-                echo "    /  ║  \\     "
-                echo "   🧭 ═══ 🗺️    "
+                echo "       ╭───╮        "
+                echo "       │◉ ◉│        "
+                echo "       ╰─┬─╯        "
+                echo "      ╭──┴──╮ ⌐    "
+                echo "      │ ▪▪▪ │/     "
+                echo "      ╰──┬──╯       "
+                echo "        ╱ ╲         "
                 echo -e "${nc}"
             else
                 echo -e "${green}"
-                echo "    .*★☆★*.     "
-                echo "     ░░◯░░      "
-                echo "   ░░/███\\░░   "
-                echo "  ░░/ ║█║ \\░░  "
-                echo "    / ║║║ \\     "
-                echo "   /  ║║║  \\    "
-                echo "  🧭 ══╬══ 🗺️   "
-                echo "      ║║║       "
-                echo "   ⚓═╩╩╩═🔭   "
+                echo "      ★  N  ★       "
+                echo "       ╭───╮        "
+                echo "       │◉ ◉│ ☆     "
+                echo "     W ╰─┬─╯ E     "
+                echo "      ╭──┴──╮ ⌐    "
+                echo "      │ ▪▪▪ │/📜   "
+                echo "      ╰──┬──╯       "
+                echo "       ╱   ╲        "
+                echo "      ╱  S  ╲       "
                 echo -e "${nc}"
             fi
             ;;
         "The Builder")
+            # Anvil & hammer — represents building/compiling
             if [ $tier -eq 1 ]; then
                 echo -e "${yellow}"
-                echo "      ╔══╗      "
-                echo "     ═╣██╠═     "
-                echo "      ╚══╝      "
-                echo "      🔨        "
+                echo "         🔨          "
+                echo "       ╭────╮        "
+                echo "       │▓▓▓▓│        "
+                echo "       ╰────╯        "
                 echo -e "${nc}"
             elif [ $tier -eq 2 ]; then
                 echo -e "${yellow}"
-                echo "     ╔════╗     "
-                echo "    ═╣ ⚙️ ╠═    "
-                echo "     ╠════╣     "
-                echo "    ═╣ 🔧 ╠═    "
-                echo "     ╚════╝     "
-                echo "      🔨🔨      "
+                echo "        ╲🔨╱         "
+                echo "       ╭────╮        "
+                echo "     ╭─┤▓▓▓▓├─╮     "
+                echo "     │ ╰────╯ │     "
+                echo "     │  ⚙  ⚙  │     "
+                echo "     ╰────────╯     "
                 echo -e "${nc}"
             else
                 echo -e "${yellow}"
-                echo "   ╔══════════╗  "
-                echo "   ║ ⚙️  ⚙️  ⚙️ ║  "
-                echo "   ╠══════════╣  "
-                echo "   ║ 🔧 ██ 🔧 ║  "
-                echo "   ╠══════════╣  "
-                echo "   ║ ⚙️  ⚙️  ⚙️ ║  "
-                echo "   ╚══════════╝  "
-                echo "    🔨🔨🔨🔨    "
-                echo "   ════════════  "
+                echo "      ⚡╲🔨╱⚡       "
+                echo "       ╭────╮        "
+                echo "     ╭─┤▓▓▓▓├─╮     "
+                echo "   ╭─┤ ╰────╯ ├─╮   "
+                echo "   │ │ ⚙ ▓▓ ⚙ │ │   "
+                echo "   │ ╰────────╯ │   "
+                echo "   ╰──┤  ▓▓  ├──╯   "
+                echo "      ╰──────╯      "
+                echo "     ═══════════     "
                 echo -e "${nc}"
             fi
             ;;
         "The Destroyer")
+            # Skull — represents destructive/powerful commands
             if [ $tier -eq 1 ]; then
                 echo -e "${red}"
-                echo "      ╱▔╲       "
-                echo "     ( ◉ )      "
-                echo "      ╲▁╱       "
-                echo "      💀        "
+                echo "        ╭───╮        "
+                echo "        │◉ ◉│        "
+                echo "        │ ▼ │        "
+                echo "        ╰───╯        "
                 echo -e "${nc}"
             elif [ $tier -eq 2 ]; then
                 echo -e "${red}"
-                echo "    ╱▔▔▔▔▔╲     "
-                echo "   ( ◉   ◉ )    "
-                echo "   (  ▽▽▽  )    "
-                echo "    ╲▁▁▁▁▁╱     "
-                echo "   🔥 💀 🔥    "
+                echo "      ╭─────╮       "
+                echo "      │◉   ◉│       "
+                echo "      │  ▼  │       "
+                echo "      │╥╥╥╥╥│       "
+                echo "      ╰─────╯       "
+                echo "       🔥�🔥       "
                 echo -e "${nc}"
             else
                 echo -e "${red}"
-                echo "  🔥🔥🔥🔥🔥🔥  "
-                echo "    ╱▔▔▔▔▔▔▔╲   "
-                echo "   ( ◉     ◉ )  "
-                echo "   (  ▽▽▽▽▽  )  "
-                echo "    ╲▁▁▁▁▁▁▁╱   "
-                echo "     ╱║███║╲     "
-                echo "    ╱ ║███║ ╲    "
-                echo "   🔥💀⚡💀🔥  "
-                echo "  🔥🔥🔥🔥🔥🔥  "
+                echo "    🔥  ╭─────╮  🔥 "
+                echo "    ╱  ╭┤     ├╮  ╲ "
+                echo "   ╱   │◉     ◉│   ╲"
+                echo "       │   ▼   │     "
+                echo "       │╥╥╥╥╥╥╥│     "
+                echo "       ╰┬─────┬╯     "
+                echo "    ⚡  ╱ ╲   ╱ ╲  ⚡ "
+                echo "   🔥🔥🔥🔥🔥🔥🔥🔥"
                 echo -e "${nc}"
             fi
             ;;
         *)
-            echo "      🤖        "
+            echo "        🤖            "
             ;;
     esac
 }
 
-# Display companion status (full panel — used on shell startup)
-__bb_show_companion_status() {
+# ─── Animated XP Bar ────────────────────────────────────────────────────────
+
+__bb_animated_bar() {
+    local xp_in="$1"
+    local bar_len=20
+    local filled=$((xp_in * bar_len / 100))
+    local empty=$((bar_len - filled))
+
+    # Animated shimmer: last filled block pulses
+    local bar=""
+    local i
+    for ((i=0; i<filled; i++)); do
+        if [ $i -eq $((filled - 1)) ] && [ $filled -gt 0 ]; then
+            bar+="▓"  # Shimmer on leading edge
+        else
+            bar+="█"
+        fi
+    done
+    for ((i=0; i<empty; i++)); do bar+="░"; done
+    echo "$bar"
+}
+
+# ─── Companion Status Display (animated version) ────────────────────────────
+
+__bb_show_companion_animated() {
     if [ ! -f "$__bb_state_file" ]; then
-        echo -e "  ${dim}🥚 No evolution data yet. Run ${bold}bb-evolve${normal}${dim} to awaken your companion!${normal}"
+        echo ""
+        echo -e "  ${dim}🥚 No evolution data yet. Run ${normal}${bold}bb-evolve${normal}${dim} to awaken your companion!${normal}"
         echo ""
         return
     fi
@@ -207,7 +279,6 @@ __bb_show_companion_status() {
     local total=$(__bb_read_json "total_commands_analyzed")
     local streak=$(__bb_read_json "streak_count")
 
-    # Fallbacks
     [ -z "$mode" ] && mode="Unknown"
     [ -z "$mode_icon" ] && mode_icon="🤖"
     [ -z "$level" ] && level=1
@@ -216,14 +287,8 @@ __bb_show_companion_status() {
     [ -z "$total" ] && total=0
     [ -z "$streak" ] && streak=0
 
-    # Calculate XP bar
     local xp_in_level=$((xp % 100))
-    local bar_len=20
-    local filled=$((xp_in_level * bar_len / 100))
-    local empty=$((bar_len - filled))
-    local bar=""
-    for ((i=0; i<filled; i++)); do bar+="█"; done
-    for ((i=0; i<empty; i++)); do bar+="░"; done
+    local bar=$(__bb_animated_bar "$xp_in_level")
 
     # Mode color
     local mode_color="$white"
@@ -234,39 +299,109 @@ __bb_show_companion_status() {
         "The Destroyer") mode_color="$red" ;;
     esac
 
-    echo -e "  ┌────────────────────────────────────────┐"
-    echo -e "  │  ${bold}⚡ COMPANION STATUS ⚡${normal}                  │"
-    echo -e "  ├────────────────────────────────────────┤"
+    # Animated panel reveal
+    echo ""
+    echo -e "  ${gray}╭──────────────────────────────────────╮${nc}"
+    sleep 0.03
+    echo -e "  ${gray}│${nc}  ${bold}⚡ COMPANION STATUS${normal}                 ${gray}│${nc}"
+    sleep 0.03
+    echo -e "  ${gray}├──────────────────────────────────────┤${nc}"
+    sleep 0.03
 
-    # Show ASCII companion
-    __bb_get_companion "$mode" "$level"
+    # Show companion art with slight animation (line by line delay)
+    local art_output
+    art_output=$(__bb_get_companion "$mode" "$level")
+    while IFS= read -r art_line; do
+        echo "$art_line"
+        sleep 0.03
+    done <<< "$art_output"
 
-    echo -e "  │  ${mode_color}${bold}$mode_icon  $mode${normal}                        "
-    echo -e "  │  ⭐ Level ${bold}$level${normal} — ${magenta}$stage${normal}              "
-    echo -e "  │  [${green}${bar}${nc}] ${xp_in_level}/100 XP           "
-    echo -e "  │  📊 Commands: ${bold}$total${normal}                    "
+    # Stats with typewriter-ish feel
+    sleep 0.05
+    echo -e "  ${gray}│${nc}  ${mode_color}${bold}${mode_icon}  ${mode}${normal}"
+    sleep 0.05
+    echo -e "  ${gray}│${nc}  ⭐ Level ${bold}${level}${normal} — ${magenta}${stage}${normal}"
+    sleep 0.05
+    echo -e "  ${gray}│${nc}  [${green}${bar}${nc}] ${xp_in_level}/100 XP"
+    sleep 0.05
+    echo -e "  ${gray}│${nc}  📊 Commands analyzed: ${bold}${total}${normal}"
 
     if [ "$streak" -ge 3 ] 2>/dev/null; then
-        echo -e "  │  🔥 Streak: ${bold}${streak}${normal} (1.5× XP!)              "
+        sleep 0.05
+        echo -e "  ${gray}│${nc}  🔥 Streak: ${bold}${streak}${normal} ${yellow}(1.5× XP!)${normal}"
     fi
 
-    echo -e "  └────────────────────────────────────────┘"
+    sleep 0.03
+    echo -e "  ${gray}╰──────────────────────────────────────╯${nc}"
     echo ""
 }
 
-# Show companion status on shell load
-__bb_show_companion_status
+# Show static version (no animation, for fast checks)
+__bb_show_companion_static() {
+    if [ ! -f "$__bb_state_file" ]; then
+        echo -e "  ${dim}🥚 No evolution data yet. Run ${normal}${bold}bb-evolve${normal}${dim} to awaken your companion!${normal}"
+        return
+    fi
 
-# ─── RPROMPT: Real-Time Companion Status (right side of every prompt) ────────
+    local mode=$(__bb_read_json "mode")
+    local mode_icon=$(__bb_read_json "mode_icon")
+    local level=$(__bb_read_json "level")
+    local xp=$(__bb_read_json "xp")
+    local stage=$(__bb_read_json "evolution_stage")
+    local total=$(__bb_read_json "total_commands_analyzed")
+    local streak=$(__bb_read_json "streak_count")
 
-# Build a compact RPROMPT string from the state file
+    [ -z "$mode" ] && mode="Unknown"
+    [ -z "$mode_icon" ] && mode_icon="🤖"
+    [ -z "$level" ] && level=1
+    [ -z "$xp" ] && xp=0
+    [ -z "$stage" ] && stage="Hatchling"
+    [ -z "$total" ] && total=0
+    [ -z "$streak" ] && streak=0
+
+    local xp_in_level=$((xp % 100))
+    local bar=$(__bb_animated_bar "$xp_in_level")
+
+    local mode_color="$white"
+    case "$mode" in
+        "The Architect") mode_color="$cyan" ;;
+        "The Explorer") mode_color="$green" ;;
+        "The Builder") mode_color="$yellow" ;;
+        "The Destroyer") mode_color="$red" ;;
+    esac
+
+    echo ""
+    echo -e "  ${gray}╭──────────────────────────────────────╮${nc}"
+    echo -e "  ${gray}│${nc}  ${bold}⚡ COMPANION STATUS${normal}                  ${gray}│${nc}"
+    echo -e "  ${gray}├──────────────────────────────────────┤${nc}"
+    __bb_get_companion "$mode" "$level"
+    echo -e "  ${gray}│${nc}  ${mode_color}${bold}${mode_icon}  ${mode}${normal}"
+    echo -e "  ${gray}│${nc}  ⭐ Level ${bold}${level}${normal} — ${magenta}${stage}${normal}"
+    echo -e "  ${gray}│${nc}  [${green}${bar}${nc}] ${xp_in_level}/100 XP"
+    echo -e "  ${gray}│${nc}  📊 Commands analyzed: ${bold}${total}${normal}"
+    if [ "$streak" -ge 3 ] 2>/dev/null; then
+        echo -e "  ${gray}│${nc}  🔥 Streak: ${bold}${streak}${normal} ${yellow}(1.5× XP!)${normal}"
+    fi
+    echo -e "  ${gray}╰──────────────────────────────────────╯${nc}"
+    echo ""
+}
+
+# ─── Run animated startup ───────────────────────────────────────────────────
+
+__bb_startup
+
+# ─── RPROMPT: Animated Real-Time Status ──────────────────────────────────────
+
+__bb_rprompt_frame=0
+__bb_rprompt_spinners=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
+__bb_rprompt_pulse=("█" "▓" "▒" "░" "▒" "▓")
+
 __bb_build_rprompt() {
     if [ ! -f "$__bb_state_file" ]; then
         echo "🥚 bb-evolve"
         return
     fi
 
-    # Read state in a single python call for speed
     local rprompt_data
     rprompt_data=$(python3 -c "
 import json
@@ -277,104 +412,95 @@ try:
     level = d.get('level', 1)
     xp = d.get('xp', 0)
     stage = d.get('evolution_stage', '?')
+    streak = d.get('streak_count', 0)
     xp_in = xp % 100
+    frame = $__bb_rprompt_frame
+    # Animated bar with pulse effect on leading edge
     bar_len = 10
     filled = int(xp_in / 100 * bar_len)
-    bar = '█' * filled + '░' * (bar_len - filled)
-    streak = d.get('streak_count', 0)
+    pulse_chars = ['█', '▓', '▒', '░', '▒', '▓']
+    pulse = pulse_chars[frame % len(pulse_chars)]
+    bar = '█' * max(0, filled - 1)
+    if filled > 0:
+        bar += pulse
+    bar += '░' * (bar_len - filled)
+    # Animated spinner
+    spinners = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
+    spin = spinners[frame % len(spinners)]
     streak_str = ' 🔥' if streak >= 3 else ''
-    print(f'{mode_icon} L{level} {stage} [{bar}] {xp_in}/100{streak_str}')
+    print(f'{spin} {mode_icon} L{level} {stage} [{bar}] {xp_in}/100{streak_str}')
 except:
-    print('🤖 ?')
+    print('🤖 ...')
 " 2>/dev/null)
 
     echo "$rprompt_data"
 }
 
-# Update RPROMPT before every prompt render
 __bb_update_rprompt() {
+    (( __bb_rprompt_frame++ ))
     RPROMPT=$(__bb_build_rprompt)
 }
 
-# Register the RPROMPT updater in precmd (Zsh)
+# Register RPROMPT updater (Zsh)
 if [[ -n "$ZSH_VERSION" ]]; then
-    # Add to precmd_functions if not already there
     if [[ ! " ${precmd_functions[*]} " =~ " __bb_update_rprompt " ]]; then
         precmd_functions+=(__bb_update_rprompt)
     fi
 fi
 
-# Welcome Message
-echo -e "✨ \e[1mHey there, coding superstar! You've just leveled up with Bash Buddy! ✨\e[0m"
-echo -e "\e[1mYour personal terminal sidekick is now installed and ready to work its magic. 🚀\e[0m"
-echo -e "\e[1mRun 'buddy --help' to explore all the cool tricks and turbocharge your productivity! 💻🔥\e[0m"
-echo -e "\e[1mMay your coding be bug-free and your terminal always obedient! 😄🤖\e[0m"
-echo """
-${bold}Author: ${normal}RamBikkina ${bold}<<<--->>> ${bold}Email: ${normal}rambikkina@yahoo.com ${bold}<<<--->>> ${bold}Version: ${normal}2.0
-${bold}Description: ${normal}Bash Buddy is your sentient terminal companion — it learns, evolves, and grows with you.
-${bold}Usage: ${normal}Source this script in your shell. Use 'buddy --help' to see all commands.
-"""  
+# ═══════════════════════════════════════════════════════════════════════════════
+#  Aliases
+# ═══════════════════════════════════════════════════════════════════════════════
 
-                                                                                                                         
-
-# Navigation Aliases
-# Quickly navigate to common directories
-alias desk='cd ~/Desktop'   # Go to Desktop directory
-alias down='cd ~/Downloads' # Go to Downloads directory
-alias docs='cd ~/Documents' # Go to Documents directory
-alias pics='cd ~/Pictures'  # Go to Pictures directory
-alias music='cd ~/Music'    # Go to Music directory
-alias videos='cd ~/Videos'  # Go to Videos directory
-alias root='cd /'           # Go to root directory
-alias home='cd ~'           # Go to home directory
+# Navigation
+alias desk='cd ~/Desktop'
+alias down='cd ~/Downloads'
+alias docs='cd ~/Documents'
+alias pics='cd ~/Pictures'
+alias music='cd ~/Music'
+alias videos='cd ~/Videos'
+alias root='cd /'
+alias home='cd ~'
 
 # Configuration Files
-# Edit or reload shell configuration files
-alias bashrc='nano ~/.bashrc'  # Edit .bashrc file
-alias zshrc='nano ~/.zshrc'    # Edit .zshrc file
-alias reload='source ~/.bashrc' # Reload .bashrc to apply changes
-alias reloadz='source ~/.zshrc' # Reload .zshrc to apply changes
+alias bashrc='nano ~/.bashrc'
+alias zshrc='nano ~/.zshrc'
+alias reload='source ~/.bashrc'
+alias reloadz='source ~/.zshrc'
 
 # System Locations
-# Navigate to system directories
-alias tmp='cd /tmp'                   # Go to /tmp directory
-alias etc='cd /etc'                   # Go to /etc directory for configurations
-alias trash='cd ~/.local/share/Trash/files' # Go to Trash directory
-alias sshconf='cd ~/.ssh'             # Go to .ssh directory for SSH configurations
+alias tmp='cd /tmp'
+alias etc='cd /etc'
+alias trash='cd ~/.local/share/Trash/files'
+alias sshconf='cd ~/.ssh'
 
-# Go Back Multiple Directories
-# Navigate up multiple directory levels
-alias ..='cd ..'      # Go up one directory
-alias ...='cd ../..'  # Go up two directories
-alias ....='cd ../../..' # Go up three directories
+# Go Back
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
 
-# Common Utilities
-# Listing files with enhanced details
-alias ls='ls --color=auto'  # List files with colors for easier readability
-alias ll='ls -lh'           # List files with detailed information in human-readable format
-alias la='ls -lha'          # List all files, including hidden ones, with details
+# Listing
+alias ls='ls --color=auto'
+alias ll='ls -lh'
+alias la='ls -lha'
 
-# Clear and Exit
-# Terminal utilities
-alias cls='clear' # Clear the terminal screen
-alias bye='exit'  # Exit the terminal
+# Terminal
+alias cls='clear'
+alias bye='exit'
 
-# System and Network Aliases
-# Network and system-related commands
-alias showWifiPass='sudo grep psk= /etc/NetworkManager/system-connections/*' # Show saved Wi-Fi passwords
-alias updateSystem='sudo apt update && sudo apt upgrade -y'                  # Update and upgrade the system
-alias ports='sudo lsof -i -P -n | grep LISTEN'                               # Show all running ports
+# System & Network
+alias showWifiPass='sudo grep psk= /etc/NetworkManager/system-connections/*'
+alias updateSystem='sudo apt update && sudo apt upgrade -y'
+alias ports='sudo lsof -i -P -n | grep LISTEN'
 
-# Git Utilities
-# Simplify Git commands
-alias gs='git status'  # Show the status of the current Git repository
-alias gp='git push'   # Push committed changes to the remote repository
+# Git
+alias gs='git status'
+alias gp='git push'
 
-# Function Definitions
+# ═══════════════════════════════════════════════════════════════════════════════
+#  Functions
+# ═══════════════════════════════════════════════════════════════════════════════
 
-# CreateVenv Function
-# Create a new Python virtual environment with a specified version and name
-# Usage: CreateVenv <python_version> <venv_name>
 CreateVenv() {
     if [ $# -ne 2 ]; then
         echo "Usage: CreateVenv <python_version> <venv_name>"
@@ -385,16 +511,10 @@ CreateVenv() {
     python$version -m venv $name
 }
 
-# myIP Function
-# Display the current public IP address
-# Usage: myIP
 myIP() {
     curl -s http://ipinfo.io/ip
 }
 
-# weather Function
-# Display weather information for a location (defaults to current location if no argument is given)
-# Usage: weather [location]
 weather() {
     if [ $# -eq 0 ]; then
         curl wttr.in
@@ -403,9 +523,6 @@ weather() {
     fi
 }
 
-# killPort Function
-# Kill the process running on a specified port
-# Usage: killPort <port_number>
 killPort() {
     if [ $# -ne 1 ]; then
         echo "Usage: killPort <port_number>"
@@ -413,7 +530,6 @@ killPort() {
     fi
     local port=$1
     local pid=$(lsof -t -i:$port)
-    
     if [ -z "$pid" ]; then
         echo "No process found running on port $port"
     else
@@ -426,10 +542,8 @@ killPort() {
 #  Sentient Companion Commands
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# bb-evolve: Trigger the evolution engine manually
 bb-evolve() {
     local engine_path=""
-    # Check common install locations
     if [ -f "/usr/local/bin/bash_buddy_evolution.py" ]; then
         engine_path="/usr/local/bin/bash_buddy_evolution.py"
     elif [ -f "$(dirname "${BASH_SOURCE[0]:-$0}")/evolution_engine.py" ]; then
@@ -439,23 +553,28 @@ bb-evolve() {
     fi
 
     if [ -z "$engine_path" ]; then
-        echo -e "${red}⚠️  Evolution engine not found. Run the BashBuddy installer first.${nc}"
+        echo -e "${red}⚠️  Evolution engine not found. Run the installer first.${nc}"
         return 1
     fi
 
-    echo -e "${magenta}${bold}⚡ Evolving your companion...${normal}${nc}"
-    python3 "$engine_path"
-    echo -e "${green}${bold}✅ Evolution complete!${normal}${nc}"
+    # Animated evolution
+    local frames=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
+    local i
+    for ((i=0; i<15; i++)); do
+        printf "\r  ${magenta}${frames[$((i % 10))]}${nc} ${bold}Evolving companion...${normal}"
+        sleep 0.08
+    done
+    
+    python3 "$engine_path" --quiet 2>/dev/null
+    printf "\r  ${green}✓${nc} ${bold}Evolution complete!${normal}       \n"
     echo ""
-    __bb_show_companion_status
+    __bb_show_companion_static
 }
 
-# bb-status: Show companion status without the full banner
 bb-status() {
-    __bb_show_companion_status
+    __bb_show_companion_static
 }
 
-# bb-reset: Reset companion to Hatchling state
 bb-reset() {
     echo -e "${yellow}${bold}⚠️  This will reset your companion to Level 1 Hatchling!${normal}${nc}"
     echo -n "Are you sure? (y/N) "
@@ -468,83 +587,55 @@ bb-reset() {
     fi
 }
 
-# Help Function
-# Display usage information for all aliases and functions
-# Usage: buddy --help
 buddy() {
     if [[ "$1" = "-help" || "$1" = "--help" || "$1" = "help" ]]; then
-        echo "${bold}Available Aliases and Functions:${normal}"
+        echo ""
+        echo "${bold}  ⚡ BashBuddy — Sentient Terminal Companion${normal}"
+        echo ""
         
-        echo ""
-        echo "${bold}═══ Sentient Companion ═══${normal}"
-        echo "bb-evolve      - Trigger the evolution engine to update your companion"
-        echo "bb-status      - Display current companion status and stats"
-        echo "bb-reset       - Reset companion back to Level 1 Hatchling"
+        echo "  ${bold}═══ Companion ═══${normal}"
+        echo "  bb-evolve      Trigger evolution engine"
+        echo "  bb-status      Show companion stats"
+        echo "  bb-reset       Reset to Level 1 Hatchling"
 
         echo ""
-        echo "${bold}═══ Navigation ═══${normal}"
-        echo "desk           - Go to Desktop directory"
-        echo "down           - Go to Downloads directory"
-        echo "docs           - Go to Documents directory"
-        echo "pics           - Go to Pictures directory"
-        echo "music          - Go to Music directory"
-        echo "videos         - Go to Videos directory"
-        echo "root           - Go to root directory"
-        echo "home           - Go to home directory"
+        echo "  ${bold}═══ Navigation ═══${normal}"
+        echo "  desk           ~/Desktop"
+        echo "  down           ~/Downloads"
+        echo "  docs           ~/Documents"
+        echo "  pics           ~/Pictures"
+        echo "  music          ~/Music"
+        echo "  videos         ~/Videos"
+        echo "  root           /"
+        echo "  home           ~"
+        echo "  .. / ... / ....   Up 1/2/3 directories"
 
         echo ""
-        echo "${bold}═══ Configuration ═══${normal}"
-        echo "bashrc         - Edit .bashrc file"
-        echo "zshrc          - Edit .zshrc file"
-        echo "reload         - Reload .bashrc to apply changes"
-        echo "reloadz        - Reload .zshrc to apply changes"
+        echo "  ${bold}═══ Config ═══${normal}"
+        echo "  bashrc/zshrc   Edit shell config"
+        echo "  reload/reloadz Reload shell config"
 
         echo ""
-        echo "${bold}═══ System Locations ═══${normal}"
-        echo "tmp            - Go to /tmp directory"
-        echo "etc            - Go to /etc directory for configurations"
-        echo "trash          - Go to Trash directory"
-        echo "sshconf        - Go to .ssh directory for SSH configurations"
+        echo "  ${bold}═══ System ═══${normal}"
+        echo "  ports          Show listening ports"
+        echo "  myIP           Public IP address"
+        echo "  weather [city] Weather report"
+        echo "  killPort <N>   Kill process on port"
+        echo "  showWifiPass   Saved Wi-Fi passwords"
 
         echo ""
-        echo "${bold}═══ Navigation Shortcuts ═══${normal}"
-        echo "..             - Go up one directory"
-        echo "...            - Go up two directories"
-        echo "....           - Go up three directories"
+        echo "  ${bold}═══ Git ═══${normal}"
+        echo "  gs             git status"
+        echo "  gp             git push"
 
         echo ""
-        echo "${bold}═══ Common Utilities ═══${normal}"
-        echo "ls             - List files with colors for easier readability"
-        echo "ll             - List files with detailed information in human-readable format"
-        echo "la             - List all files, including hidden ones, with details"
-
+        echo "  ${bold}═══ Utilities ═══${normal}"
+        echo "  ll / la        Detailed / all file listing"
+        echo "  cls            Clear terminal"
+        echo "  bye            Exit terminal"
+        echo "  CreateVenv <ver> <name>   New Python venv"
         echo ""
-        echo "${bold}═══ Terminal ═══${normal}"
-        echo "cls            - Clear the terminal screen"
-        echo "bye            - Exit the terminal"
-
-        echo ""
-        echo "${bold}═══ System & Network ═══${normal}"
-        echo "showWifiPass   - Show saved Wi-Fi passwords"
-        echo "updateSystem   - Update and upgrade the system"
-        echo "ports          - Show all running ports"
-
-        echo ""
-        echo "${bold}═══ Git ═══${normal}"
-        echo "gs             - Show the status of the current Git repository"
-        echo "gp             - Push committed changes to the remote repository"
-        
-        echo ""
-        echo "${bold}═══ Functions ═══${normal}"
-        echo "CreateVenv     - Create a new Python virtual environment"
-        echo "                Usage: CreateVenv <python_version> <venv_name>"
-        echo "myIP           - Display the current public IP address"
-        echo "                Usage: myIP"
-        echo "weather        - Display weather information for a location"
-        echo "                Usage: weather [location]"
-        echo "killPort       - Kill the process running on a specified port"
-        echo "                Usage: killPort <port_number>"
     else
-        echo "Invalid option. Use 'buddy --help' to see available commands."
+        echo "Use 'buddy --help' to see available commands."
     fi
 }
